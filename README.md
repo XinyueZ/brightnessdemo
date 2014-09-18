@@ -2,8 +2,8 @@ Brightness Demo
 ======
 
  * Demo to show how to control brightness though codes. In order to give a simple demonstration,  I avoid "difficult" proportional calculation on system brightness value(10 to 255) which could be mirrored by current window brightness(0 to 1).  
- * There's including a 5 seconds daley operation that make system brightness to max.
- * There's including a 5 seconds daley operation that make system brightness to min.
+ * There's including a 5 seconds daley operation that makes system brightness to max.
+ * There's including a 5 seconds daley operation that makes system brightness to min.
 
 License
 ======
