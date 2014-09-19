@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:text="max"
             android:layout_margin="5dp"
-            android:checked="true"
             android:onClick="selectMax"/>
 
         <RadioButton
