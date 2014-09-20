@@ -2,6 +2,7 @@ package com.schautup.brightness;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -91,6 +92,8 @@ public class MainActivity extends ActionBarActivity {
 				Toast.makeText(getApplicationContext(),
 						"You can resume system brightness to MIN, but NO EFFECT on this application, because WindowManager.LayoutParams had been set after the button was clicked.",
 						Toast.LENGTH_LONG).show();
+				Intent i = new Intent(getApplicationContext(), BrightnessRefreshActivity.class);
+				startActivity(i);
 			}
 		}, 5000);
 	}
@@ -110,6 +113,9 @@ public class MainActivity extends ActionBarActivity {
 				Toast.makeText(getApplicationContext(),
 						"You can resume system brightness to MAX, but NO EFFECT on this application, because WindowManager.LayoutParams had been set after the button was clicked.",
 						Toast.LENGTH_LONG).show();
+
+				Intent i = new Intent(getApplicationContext(), BrightnessRefreshActivity.class);
+				startActivity(i);
 			}
 		}, 5000);
 	}
@@ -120,12 +126,14 @@ public class MainActivity extends ActionBarActivity {
 	 * @author Xinyue Zhao
 	 */
 	enum Brightness {
-		MAX(1f), MEDIUM(0.5f), MIN(0.1f);
+		MAX(1f, 10), MEDIUM(0.5f, (255 + 10) / 2), MIN(0.1f, 255);
 
-		public float value;
+		public float valueF;
+		public int valueI;
 
-		Brightness(float _value) {
-			value = _value;
+		Brightness(float _valueF, int _valueI) {
+			valueF = _valueF;
+			valueI = _valueI;
 		}
 	}
 
@@ -181,7 +189,7 @@ public class MainActivity extends ActionBarActivity {
 			//Get the current window attributes.
 			WindowManager.LayoutParams params = window.getAttributes();
 			//Set the brightness of this window.
-			params.screenBrightness = brightness.value;
+			params.screenBrightness = brightness.valueF;
 			//Apply attribute changes to this window.
 			window.setAttributes(params);
 
@@ -191,5 +199,7 @@ public class MainActivity extends ActionBarActivity {
 			throw e;
 		}
 	}
+
+
 
 }
