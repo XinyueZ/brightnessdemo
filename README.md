@@ -1,9 +1,10 @@
 Brightness Demo
 ======
 
- * Demo to show how to control brightness though codes. In order to give a simple demonstration,  I avoid "difficult" proportional calculation on system brightness value(10 to 255) which could be mirrored by current window brightness(0 to 1).  
+ * Demo to show how to control brightness though codes.
  * There's including a 5 seconds daley operation that makes system brightness to max.
  * There's including a 5 seconds daley operation that makes system brightness to min.
+ * Use a dummy activity which can refresh brightness status.
 
 License
 ======

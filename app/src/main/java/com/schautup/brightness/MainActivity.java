@@ -6,23 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 /**
- * Demo to show how to control brightness though codes. In order to give a simple demonstration, I avoid "difficult"
- * proportional calculation on system brightness value(10 to 255) which could be mirrored by current window brightness
- * (0 to 1). See {@link android.view.WindowManager.LayoutParams#screenBrightness}).
+ * Demo to show how to control brightness thπough codes. In order to give a simple demonstration.
  * <p/>
  * <p/>
  * There's including a 5 seconds daley operation that make system brightness to max.
  * <p/>
  * There's including a 5 seconds daley operation that make system brightness to min.
+ * <p/>
+ * Use a dummy activity which can refresh brightness status.
  *
  * @author Xinyue Zhao.
  */
@@ -42,11 +40,7 @@ public class MainActivity extends ActionBarActivity {
 	 * 		No usage.
 	 */
 	public void selectMax(View view) {
-		try {
-			setBrightness(getApplication(), getWindow(), Brightness.MAX);
-		} catch (SettingNotFoundException e) {
-			e.printStackTrace();
-		}
+		setBrightness(getApplication(), getWindow(), Brightness.MAX);
 	}
 
 	/**
@@ -56,11 +50,7 @@ public class MainActivity extends ActionBarActivity {
 	 * 		No usage.
 	 */
 	public void selectMedium(View view) {
-		try {
-			setBrightness(getApplication(), getWindow(), Brightness.MEDIUM);
-		} catch (SettingNotFoundException e) {
-			e.printStackTrace();
-		}
+		setBrightness(getApplication(), getWindow(), Brightness.MEDIUM);
 	}
 
 	/**
@@ -70,11 +60,7 @@ public class MainActivity extends ActionBarActivity {
 	 * 		No usage.
 	 */
 	public void selectMin(View view) {
-		try {
-			setBrightness(getApplication(), getWindow(), Brightness.MIN);
-		} catch (SettingNotFoundException e) {
-			e.printStackTrace();
-		}
+		setBrightness(getApplication(), getWindow(), Brightness.MIN);
 	}
 
 	/**
@@ -126,7 +112,7 @@ public class MainActivity extends ActionBarActivity {
 	 * @author Xinyue Zhao
 	 */
 	enum Brightness {
-		MAX(1f, 10), MEDIUM(0.5f, (255 + 10) / 2), MIN(0.1f, 255);
+		MAX(1f, 255), MEDIUM(0.5f, (255 + 10) / 2), MIN(0.1f, 10);
 
 		public float valueF;
 		public int valueI;
@@ -144,62 +130,34 @@ public class MainActivity extends ActionBarActivity {
 	 * 		{@link android.content.Context}.
 	 * @param window
 	 * 		{@link android.view.Window}.
-	 * @param brightness
-	 * 		From 0.1(min), 0.5(medium) 1(max).
 	 */
-	public static void setBrightness(Context cxt, Window window, Brightness brightness) throws
-			SettingNotFoundException {
-		int max = 255;
-		int medium = (255 + 10) / 2;
-		int min = 10;
-		try {
-			//Get the content resolver.
-			ContentResolver cr = cxt.getContentResolver();
-			// To handle the auto.
-			Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS_MODE,
-					Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-			//Get the current system brightness.
-			int currentBrightness = Settings.System.getInt(cr, Settings.System.SCREEN_BRIGHTNESS);
-			switch (brightness) {
-			case MIN:
-				currentBrightness = min;
-				break;
-			case MEDIUM:
-				currentBrightness = medium;
-				break;
-			case MAX:
-				currentBrightness = max;
-				break;
-			default:
-				Toast.makeText(cxt, "Out of selection, only max-1, medium-0.5, min-0.1 are available.",
-						Toast.LENGTH_LONG).show();
-				break;
-			}
-			/*
-			 * Set whole system brightness.
-			 */
+	public static void setBrightness(Context cxt, Window window, Brightness brightness) {
+		ContentResolver cr = cxt.getContentResolver();
+		// To handle the auto.
+		Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS_MODE,
+				Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+		//Get the current system brightness.
+		//int currentBrightness = Settings.System.getInt(cr, Settings.System.SCREEN_BRIGHTNESS);
+		int currentBrightness = brightness.valueI;
 
-			//Set the system brightness using the brightness variable value.
-			Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS, currentBrightness);
+		/*
+		 * Set whole system brightness.
+		 */
 
-			/*
-			 *Set current window screen.
-			 */
+		//Set the system brightness using the brightness variable value.
+		Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS, currentBrightness);
 
-			//Get the current window attributes.
-			WindowManager.LayoutParams params = window.getAttributes();
-			//Set the brightness of this window.
-			params.screenBrightness = brightness.valueF;
-			//Apply attribute changes to this window.
-			window.setAttributes(params);
+		/*
+		 *Set current window screen.
+		 */
 
-
-		} catch (SettingNotFoundException e) {
-			Log.e("Error", "Cannot access system brightness");
-			throw e;
-		}
+		//Get the current window attributes.
+		WindowManager.LayoutParams params = window.getAttributes();
+		//Set the brightness of this window.
+		params.screenBrightness = brightness.valueI / (float) 255;
+		//Apply attribute changes to this window.
+		window.setAttributes(params);
 	}
-
 
 
 }
