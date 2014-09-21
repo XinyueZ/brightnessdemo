@@ -117,9 +117,9 @@ public class MainActivity extends ActionBarActivity {
 		public float valueF;
 		public int valueI;
 
-		Brightness(float _valueF, int _valueI) {
-			valueF = _valueF;
-			valueI = _valueI;
+		Brightness(float valueF, int valueI) {
+			this.valueF = valueF;
+			this.valueI = valueI;
 		}
 	}
 
