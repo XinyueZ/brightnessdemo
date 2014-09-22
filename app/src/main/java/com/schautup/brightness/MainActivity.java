@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -77,10 +76,8 @@ public class MainActivity extends ActionBarActivity {
 			public void run() {
 				selectMax(null);
 				Toast.makeText(getApplicationContext(), "TO MAX", Toast.LENGTH_LONG).show();
-
-				PreferenceManager.getDefaultSharedPreferences(getApplication()).edit().putBoolean("refreshed", false)
-						.commit();
-				Intent i = new Intent(MainActivity.this, BrightnessRefreshActivity.class);
+				Intent i = new Intent("com.schautup.brightness.action.REFRESH");
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(i);
 			}
 		}, 5000);
@@ -99,10 +96,8 @@ public class MainActivity extends ActionBarActivity {
 			public void run() {
 				selectMin(null);
 				Toast.makeText(getApplicationContext(), "TO MIN", Toast.LENGTH_LONG).show();
-
-				PreferenceManager.getDefaultSharedPreferences(getApplication()).edit().putBoolean("refreshed", false)
-						.commit();
-				Intent i = new Intent(MainActivity.this, BrightnessRefreshActivity.class);
+				Intent i = new Intent("com.schautup.brightness.action.REFRESH");
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(i);
 			}
 		}, 5000);
@@ -126,12 +121,13 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * Set system brightness.
+	 * Set system brightness and current window brightness.
 	 *
 	 * @param cxt
 	 * 		{@link android.content.Context}.
 	 * @param window
 	 * 		{@link android.view.Window}.
+	 * @param brightness The brightness level wanna.
 	 */
 	public static void setBrightness(Context cxt, Window window, Brightness brightness) {
 		ContentResolver cr = cxt.getContentResolver();
