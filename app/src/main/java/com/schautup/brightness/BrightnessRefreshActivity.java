@@ -2,33 +2,41 @@ package com.schautup.brightness;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.view.Window;
 import android.view.WindowManager;
 
-public final class BrightnessRefreshActivity extends Activity{
+public final class BrightnessRefreshActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		if(!PreferenceManager.getDefaultSharedPreferences(getApplication()).getBoolean("refreshed", false)) {
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		refreshBrightness(getBrightnessLevel());
+			refreshBrightness(getBrightnessLevel());
 
-		Thread t = new Thread() {
-			public void run() {
-				try {
-					sleep(10);
-				} catch (InterruptedException e) {
+			Thread t = new Thread() {
+				public void run() {
+					try {
+						sleep(10);
+					} catch (InterruptedException e) {
+					}
+					PreferenceManager.getDefaultSharedPreferences(getApplication()).edit().putBoolean("refreshed", true)
+							.commit();
+					finish();
 				}
-				finish();
-			}
-		};
-		t.start();
+			};
+			t.start();
+		} else {
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+		}
 	}
 
 	//----------------------------------------------------------

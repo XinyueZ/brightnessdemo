@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -75,10 +76,11 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void run() {
 				selectMax(null);
-				Toast.makeText(getApplicationContext(),
-						"You can resume system brightness to MIN, but NO EFFECT on this application, because WindowManager.LayoutParams had been set after the button was clicked.",
-						Toast.LENGTH_LONG).show();
-				Intent i = new Intent(getApplicationContext(), BrightnessRefreshActivity.class);
+				Toast.makeText(getApplicationContext(), "TO MAX", Toast.LENGTH_LONG).show();
+
+				PreferenceManager.getDefaultSharedPreferences(getApplication()).edit().putBoolean("refreshed", false)
+						.commit();
+				Intent i = new Intent(MainActivity.this, BrightnessRefreshActivity.class);
 				startActivity(i);
 			}
 		}, 5000);
@@ -96,11 +98,11 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void run() {
 				selectMin(null);
-				Toast.makeText(getApplicationContext(),
-						"You can resume system brightness to MAX, but NO EFFECT on this application, because WindowManager.LayoutParams had been set after the button was clicked.",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "TO MIN", Toast.LENGTH_LONG).show();
 
-				Intent i = new Intent(getApplicationContext(), BrightnessRefreshActivity.class);
+				PreferenceManager.getDefaultSharedPreferences(getApplication()).edit().putBoolean("refreshed", false)
+						.commit();
+				Intent i = new Intent(MainActivity.this, BrightnessRefreshActivity.class);
 				startActivity(i);
 			}
 		}, 5000);
@@ -154,7 +156,8 @@ public class MainActivity extends ActionBarActivity {
 		//Get the current window attributes.
 		WindowManager.LayoutParams params = window.getAttributes();
 		//Set the brightness of this window.
-		params.screenBrightness = brightness.valueI / (float) 255;
+		float newBrightness = (brightness.valueI / (float) 255);
+		params.screenBrightness = newBrightness < 0.1 ? 0.1f : newBrightness;
 		//Apply attribute changes to this window.
 		window.setAttributes(params);
 	}
